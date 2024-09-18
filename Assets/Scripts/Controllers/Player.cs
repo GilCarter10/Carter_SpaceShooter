@@ -29,32 +29,33 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-        //velocity += acceleration * transform.up * Time.deltaTime;
 
+        PlayerMovement();
+        
 
+    }
+
+    public void PlayerMovement()
+    {
+        
         if (Input.GetKey("up"))
         {
-            PlayerMovement(Vector3.up, speed);
+            transform.position += Vector3.up * acceleration * Time.deltaTime;
+            if ()
+
         }
         if (Input.GetKey("down"))
         {
-            PlayerMovement(Vector3.down, speed);
+            transform.position += Vector3.down * acceleration * Time.deltaTime;
         }
         if (Input.GetKey("left"))
         {
-            PlayerMovement(Vector3.left, speed);
+            transform.position += Vector3.left * acceleration * Time.deltaTime;
         }
         if (Input.GetKey("right"))
         {
-            PlayerMovement(Vector3.right, speed);
+            transform.position += Vector3.right * acceleration * Time.deltaTime;
         }
-    }
-
-    public void PlayerMovement(Vector3 velocity, float speedValue)
-    {
-        velocity += acceleration * velocity * Time.deltaTime;
-        transform.position += transform.up * speedValue * Time.deltaTime;
-
     }
 
 }
