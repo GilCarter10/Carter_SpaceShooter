@@ -17,7 +17,7 @@ public class Stars : MonoBehaviour
     {
         for (int i = 0; i < starTransforms.Count; i++)
         {
-            Debug.DrawLine(starTransforms[i].transform.position, starTransforms[i + 1].transform.position, Color.blue);
+            //Debug.DrawLine(starTransforms[i].transform.position, starTransforms[i + 1].transform.position, Color.blue);
         }
     }
 }

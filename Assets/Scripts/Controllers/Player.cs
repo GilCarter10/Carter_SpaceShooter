@@ -1,6 +1,6 @@
-﻿using Codice.Client.BaseCommands.CheckIn.Progress;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -10,52 +10,180 @@ public class Player : MonoBehaviour
     public GameObject bombPrefab;
     public Transform bombsTransform;
 
-    //private Vector3 velocity = Vector3.zero;
+    public Vector3 velocity = Vector3.zero;
 
-    public float speed = 5f;
+    public float acceleration;
 
-    private float timetoReachSpeed = 3f;
+    private float maxSpeed = 5f;
 
-    private float targetSpeed = 2f;
+    private float accelerationTime = 2f;
 
-    private float acceleration;
+    private float decelerationTime = 5f;
 
-    private float maxSpeed;
+    private bool decelerateUp = false;
+    private bool decelerateDown = false;
+    private bool decelerateLeft = false;
+    private bool decelerateRight = false;
 
     private void Start()
     {
-        acceleration = targetSpeed / timetoReachSpeed;
     }
 
     void Update()
     {
 
-        PlayerMovement();
-        
+        PlayerMovement(accelerationTime);
+
 
     }
 
-    public void PlayerMovement()
+    public void PlayerMovement(float timeToReachSpeed)
     {
-        
+        transform.position += velocity * Time.deltaTime;
+
         if (Input.GetKey("up"))
         {
-            transform.position += Vector3.up * acceleration * Time.deltaTime;
-            if ()
-
+            acceleration = maxSpeed / timeToReachSpeed;
+            if (velocity.magnitude < maxSpeed)
+            {
+                velocity += acceleration * Vector3.up * Time.deltaTime;
+            }
         }
         if (Input.GetKey("down"))
         {
-            transform.position += Vector3.down * acceleration * Time.deltaTime;
+            acceleration = maxSpeed / timeToReachSpeed;
+            if (velocity.magnitude < maxSpeed)
+            {
+                velocity += acceleration * Vector3.down * Time.deltaTime;
+            }
         }
         if (Input.GetKey("left"))
         {
-            transform.position += Vector3.left * acceleration * Time.deltaTime;
+            acceleration = maxSpeed / timeToReachSpeed;
+            if (velocity.magnitude < maxSpeed)
+            {
+                velocity += acceleration * Vector3.left * Time.deltaTime;
+            }
         }
         if (Input.GetKey("right"))
         {
-            transform.position += Vector3.right * acceleration * Time.deltaTime;
+            acceleration = maxSpeed / timeToReachSpeed;
+            if (velocity.magnitude < maxSpeed)
+            {
+                velocity += acceleration * Vector3.right * Time.deltaTime;
+            }
+            
         }
+
+        if (Input.GetKeyUp("up"))
+        {
+            decelerateUp = true;
+        }
+
+        if (Input.GetKeyUp("down"))
+        {
+            decelerateDown = true;
+        }
+
+        if (Input.GetKeyUp("right"))
+        {
+
+            decelerateRight = true;
+        }
+
+        if (Input.GetKeyUp("left"))
+        {
+
+            decelerateLeft = true;
+        }
+
+
+        if (decelerateUp == true)
+        {
+            if (velocity.magnitude > 0.01)
+            {
+                acceleration = 10f / decelerationTime;
+                velocity -= acceleration * Vector3.up * Time.deltaTime;
+            }
+            if ((velocity.magnitude < 0.01)){
+                velocity = Vector3.zero;
+                decelerateUp = false;
+            }
+        }
+        if (decelerateDown == true)
+        {
+            if (velocity.magnitude > 0.01)
+            {
+                acceleration = 10f / decelerationTime;
+                velocity -= acceleration * Vector3.down * Time.deltaTime;
+            }
+            if ((velocity.magnitude < 0.01))
+            {
+                velocity = Vector3.zero;
+                decelerateDown = false;
+            }
+        }
+        if (decelerateRight == true)
+        {
+            if (velocity.magnitude > 0.01)
+            {
+                acceleration = 10f / decelerationTime;
+                velocity -= acceleration * Vector3.right * Time.deltaTime;
+            }
+            if ((velocity.magnitude < 0.01))
+            {
+                velocity = Vector3.zero;
+                decelerateRight = false;
+            }
+        }
+        if (decelerateLeft == true)
+        {
+            if (velocity.magnitude > 0.01)
+            {
+                acceleration = 10f / decelerationTime;
+                velocity -= acceleration * Vector3.left * Time.deltaTime;
+            }
+            if ((velocity.magnitude < 0.01))
+            {
+                velocity = Vector3.zero;
+                decelerateLeft = false;
+            }
+        }
+
+
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
+
+
+
+
