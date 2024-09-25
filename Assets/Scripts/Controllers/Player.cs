@@ -32,7 +32,7 @@ public class Player : MonoBehaviour
     private Color radarColour;
 
     public float radarRadius;
-    public int radarPoints;
+    public float radarPoints;
 
     private void Start()
     {
@@ -163,14 +163,14 @@ public class Player : MonoBehaviour
     }
 
 
-    public void EnemyRader(float radius, int circlePoints)
+    public void EnemyRader(float radius, float circlePoints)
     {
         circleAngle = 360 / circlePoints;
         
         for (int i = 0; i < circlePoints; i++)
         {
-            firstPoint = new Vector3(Mathf.Cos(circleAngle + (circleAngle * i) * Mathf.Deg2Rad), (Mathf.Sin(circleAngle + (circleAngle * i) * Mathf.Deg2Rad))) * radius + transform.position;
-            nextPoint = new Vector3(Mathf.Cos(circleAngle + (circleAngle * (i + 1)) * Mathf.Deg2Rad), (Mathf.Sin(circleAngle + (circleAngle * (i + 1)) * Mathf.Deg2Rad))) * radius + transform.position;
+            firstPoint = new Vector3(Mathf.Cos((circleAngle * i) * Mathf.Deg2Rad), (Mathf.Sin((circleAngle * i) * Mathf.Deg2Rad))) * radius + transform.position;
+            nextPoint = new Vector3(Mathf.Cos((circleAngle * (i + 1)) * Mathf.Deg2Rad), (Mathf.Sin((circleAngle * (i + 1)) * Mathf.Deg2Rad))) * radius + transform.position;
             Debug.DrawLine(firstPoint, nextPoint, radarColour);
         }
 
