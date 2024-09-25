@@ -36,7 +36,6 @@ public class Asteroid : MonoBehaviour
             movement.x = Random.Range(-maxFloatDistance, maxFloatDistance);
             movement.y = Random.Range(-maxFloatDistance, maxFloatDistance);
             target = transform.position + movement;
-            Debug.Log("new point chosen");
         }
 
     }

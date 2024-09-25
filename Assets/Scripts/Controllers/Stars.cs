@@ -7,6 +7,9 @@ public class Stars : MonoBehaviour
     public List<Transform> starTransforms;
     public float drawingTime;
 
+    float timer;
+    Vector3 nextPoint;
+
     // Update is called once per frame
     void Update()
     {
@@ -15,10 +18,11 @@ public class Stars : MonoBehaviour
 
     public void DrawConstellation()
     {
-        for (int i = 0; i < starTransforms.Count; i++)
-        {
-            //Debug.DrawLine(starTransforms[i].transform.position, starTransforms[i + 1].transform.position, Color.blue);
-        }
+        timer += Time.deltaTime;
+        nextPoint = starTransforms[0].transform.position + (starTransforms[1].transform.position - starTransforms[0].transform.position).normalized * timer;
+
+        Debug.DrawLine(starTransforms[0].transform.position, nextPoint);
+        
     }
 }
 
