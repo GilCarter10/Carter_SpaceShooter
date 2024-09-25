@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using JetBrains.Annotations;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
@@ -25,6 +26,14 @@ public class Player : MonoBehaviour
     private bool decelerateLeft = false;
     private bool decelerateRight = false;
 
+    private float circleAngle;
+    private Vector3 firstPoint;
+    private Vector3 nextPoint;
+    private Color radarColour;
+
+    public float radarRadius;
+    public int radarPoints;
+
     private void Start()
     {
     }
@@ -33,6 +42,8 @@ public class Player : MonoBehaviour
     {
 
         PlayerMovement(accelerationTime);
+
+        EnemyRader(radarRadius, radarPoints);
 
 
     }
@@ -149,37 +160,34 @@ public class Player : MonoBehaviour
                 decelerateLeft = false;
             }
         }
-
-
     }
 
 
+    public void EnemyRader(float radius, int circlePoints)
+    {
+        circleAngle = 360 / circlePoints;
+        
+        for (int i = 0; i < circlePoints; i++)
+        {
+            firstPoint = new Vector3(Mathf.Cos(circleAngle + (circleAngle * i) * Mathf.Deg2Rad), (Mathf.Sin(circleAngle + (circleAngle * i) * Mathf.Deg2Rad))) * radius + transform.position;
+            nextPoint = new Vector3(Mathf.Cos(circleAngle + (circleAngle * (i + 1)) * Mathf.Deg2Rad), (Mathf.Sin(circleAngle + (circleAngle * (i + 1)) * Mathf.Deg2Rad))) * radius + transform.position;
+            Debug.DrawLine(firstPoint, nextPoint, radarColour);
+        }
+
+        Vector3 enemyDistance = transform.position - enemyTransform.position;
+
+        if (enemyDistance.magnitude < radius)
+        {
+            radarColour = Color.red;
+        } else
+        {
+            radarColour = Color.green;
+        }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        //divide 360 by circle points
+        //first point should have an angle of of (360 divided by circle points) and each point after should have an angle of that plus that again
+    }
 
 
 }
