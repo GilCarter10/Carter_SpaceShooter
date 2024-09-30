@@ -32,10 +32,20 @@ public class Player : MonoBehaviour
     private Color radarColour;
 
     public float radarRadius;
-    public float radarPoints;
+    public int radarPoints;
+
+    public GameObject powerupPrefab;
+    private Vector3 powerupTransform;
+    private float powerupAngle;
+    private Vector3 powerupOffset;
+
+    public float powerupRadius;
+    public int powerupNumber;
+
 
     private void Start()
     {
+
     }
 
     void Update()
@@ -44,6 +54,11 @@ public class Player : MonoBehaviour
         PlayerMovement(accelerationTime);
 
         EnemyRader(radarRadius, radarPoints);
+
+        if (Input.GetKeyDown("p"))
+        {
+            SpawnPowerups(powerupRadius, powerupNumber);
+        }
 
 
     }
@@ -163,7 +178,7 @@ public class Player : MonoBehaviour
     }
 
 
-    public void EnemyRader(float radius, float circlePoints)
+    public void EnemyRader(float radius, int circlePoints)
     {
         circleAngle = 360 / circlePoints;
         
@@ -189,6 +204,25 @@ public class Player : MonoBehaviour
         //first point should have an angle of of (360 divided by circle points) and each point after should have an angle of that plus that again
     }
 
+    public void SpawnPowerups(float radius, int numberOfPowerups)
+    {
+        powerupAngle = 360 / numberOfPowerups;
+        
+        for (int i = 0; i <= numberOfPowerups; i++)
+        {
+            powerupOffset = new Vector3(Mathf.Cos((powerupAngle * i) * Mathf.Deg2Rad), (Mathf.Sin((powerupAngle * i) * Mathf.Deg2Rad))) * radius;
+            powerupTransform = transform.position + powerupOffset;
+            Instantiate(powerupPrefab, powerupTransform, transform.rotation);
+            Debug.Log("instantiated");
+        }
+
+        //create variable for powerup prefab
+        //use a for loop to run as many times as there are powerups to be spawned
+        //divide 360 by the number of powerups
+        //turn that angle into a vector using the "P = (cos(), sin()) * radius" method
+        //use that vector to offset the powerup position
+        //increase the angle each time the for loop runs
+    }
 
 }
 
