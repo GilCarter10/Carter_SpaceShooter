@@ -11,21 +11,21 @@ public class Player : MonoBehaviour
     public GameObject bombPrefab;
     public Transform bombsTransform;
 
-    public Vector3 velocity = Vector3.zero;
+    
+    //General Velocity
+    public float maxSpeed;
+    private Vector3 currentVelocity;
 
-    public float acceleration;
+    //Acceleration
+    public float accelerationTime;
+    private float acceleration;
 
-    private float maxSpeed = 5f;
+    //Deceleration
+    public float decelerationTime;
+    private float deceleration;
 
-    private float accelerationTime = 2f;
 
-    private float decelerationTime = 5f;
-
-    private bool decelerateUp = false;
-    private bool decelerateDown = false;
-    private bool decelerateLeft = false;
-    private bool decelerateRight = false;
-
+    //Radar Variables
     private float circleAngle;
     private Vector3 firstPoint;
     private Vector3 nextPoint;
@@ -34,6 +34,8 @@ public class Player : MonoBehaviour
     public float radarRadius;
     public int radarPoints;
 
+
+    //Powerup Variables
     public GameObject powerupPrefab;
     private Vector3 powerupTransform;
     private float powerupAngle;
@@ -45,13 +47,14 @@ public class Player : MonoBehaviour
 
     private void Start()
     {
-
+        acceleration = maxSpeed / accelerationTime;
+        deceleration = maxSpeed / decelerationTime;
     }
 
     void Update()
     {
 
-        PlayerMovement(accelerationTime);
+        PlayerMovement();
 
         EnemyRader(radarRadius, radarPoints);
 
@@ -63,118 +66,50 @@ public class Player : MonoBehaviour
 
     }
 
-    public void PlayerMovement(float timeToReachSpeed)
+    public void PlayerMovement()
     {
-        transform.position += velocity * Time.deltaTime;
-
-        if (Input.GetKey("up"))
+        Vector2 currentInput = Vector2.zero;
+        if (Input.GetKey(KeyCode.LeftArrow))
         {
-            acceleration = maxSpeed / timeToReachSpeed;
-            if (velocity.magnitude < maxSpeed)
+            currentInput += Vector2.left;
+        }
+        if (Input.GetKey(KeyCode.RightArrow))
+        {
+            currentInput += Vector2.right;
+        }
+        if (Input.GetKey(KeyCode.UpArrow))
+        {
+            currentInput += Vector2.up;
+        }
+        if (Input.GetKey(KeyCode.DownArrow))
+        {
+            currentInput += Vector2.down;
+        }
+        
+        if (currentInput.magnitude > 0)
+        {
+            //our character is accelerating
+            currentVelocity += acceleration * Time.deltaTime * (Vector3)currentInput.normalized;
+            if (currentVelocity.magnitude > maxSpeed)
             {
-                velocity += acceleration * Vector3.up * Time.deltaTime;
+                currentVelocity = currentVelocity.normalized * maxSpeed;
+            }
+        } else
+        {
+            //Our character is decelerating
+            Vector3 velocityDelta = (Vector3)currentVelocity.normalized * deceleration * Time.deltaTime;
+            if(velocityDelta.magnitude > currentVelocity.magnitude)
+            {
+                currentVelocity = Vector3.zero;
+            }
+            else
+            {
+                currentVelocity -= velocityDelta;
             }
         }
-        if (Input.GetKey("down"))
-        {
-            acceleration = maxSpeed / timeToReachSpeed;
-            if (velocity.magnitude < maxSpeed)
-            {
-                velocity += acceleration * Vector3.down * Time.deltaTime;
-            }
-        }
-        if (Input.GetKey("left"))
-        {
-            acceleration = maxSpeed / timeToReachSpeed;
-            if (velocity.magnitude < maxSpeed)
-            {
-                velocity += acceleration * Vector3.left * Time.deltaTime;
-            }
-        }
-        if (Input.GetKey("right"))
-        {
-            acceleration = maxSpeed / timeToReachSpeed;
-            if (velocity.magnitude < maxSpeed)
-            {
-                velocity += acceleration * Vector3.right * Time.deltaTime;
-            }
-            
-        }
-
-        if (Input.GetKeyUp("up"))
-        {
-            decelerateUp = true;
-        }
-
-        if (Input.GetKeyUp("down"))
-        {
-            decelerateDown = true;
-        }
-
-        if (Input.GetKeyUp("right"))
-        {
-
-            decelerateRight = true;
-        }
-
-        if (Input.GetKeyUp("left"))
-        {
-
-            decelerateLeft = true;
-        }
+        transform.position += currentVelocity * Time.deltaTime;
 
 
-        if (decelerateUp == true)
-        {
-            if (velocity.magnitude > 0.01)
-            {
-                acceleration = 10f / decelerationTime;
-                velocity -= acceleration * Vector3.up * Time.deltaTime;
-            }
-            if ((velocity.magnitude < 0.01)){
-                velocity = Vector3.zero;
-                decelerateUp = false;
-            }
-        }
-        if (decelerateDown == true)
-        {
-            if (velocity.magnitude > 0.01)
-            {
-                acceleration = 10f / decelerationTime;
-                velocity -= acceleration * Vector3.down * Time.deltaTime;
-            }
-            if ((velocity.magnitude < 0.01))
-            {
-                velocity = Vector3.zero;
-                decelerateDown = false;
-            }
-        }
-        if (decelerateRight == true)
-        {
-            if (velocity.magnitude > 0.01)
-            {
-                acceleration = 10f / decelerationTime;
-                velocity -= acceleration * Vector3.right * Time.deltaTime;
-            }
-            if ((velocity.magnitude < 0.01))
-            {
-                velocity = Vector3.zero;
-                decelerateRight = false;
-            }
-        }
-        if (decelerateLeft == true)
-        {
-            if (velocity.magnitude > 0.01)
-            {
-                acceleration = 10f / decelerationTime;
-                velocity -= acceleration * Vector3.left * Time.deltaTime;
-            }
-            if ((velocity.magnitude < 0.01))
-            {
-                velocity = Vector3.zero;
-                decelerateLeft = false;
-            }
-        }
     }
 
 
