@@ -45,6 +45,19 @@ public class Player : MonoBehaviour
     public int powerupNumber;
 
 
+    //Bomb Variables
+    public Vector2 bombOffset;
+    public int numberOfBombs;
+    public float bombTrailSpacing;
+
+    public float explosionDistance;
+    public List<GameObject> activeBombs = new List<GameObject>();
+    public List<Vector3> offsetList = new List<Vector3>();
+    GameObject movingBomb;
+    Vector3 bombDirection;
+    Vector2 bombDist;
+    public bool moveBomb = false;
+
     private void Start()
     {
         acceleration = maxSpeed / accelerationTime;
@@ -62,6 +75,25 @@ public class Player : MonoBehaviour
         {
             SpawnPowerups(powerupRadius, powerupNumber);
         }
+        
+        if (Input.GetKeyDown("b"))
+        {
+            SpawnBombAtOffset(bombOffset);
+        }
+
+        if (Input.GetKeyDown("t"))
+        {
+            SpawnBombTrail(bombTrailSpacing, numberOfBombs);
+        }
+
+        if (Input.GetKeyDown("c"))
+        {
+            SpawnBombOnRandomCorner(0.5f);
+        }
+
+
+        FireBombs(explosionDistance);
+
 
 
     }
@@ -157,6 +189,94 @@ public class Player : MonoBehaviour
         //turn that angle into a vector using the "P = (cos(), sin()) * radius" method
         //use that vector to offset the powerup position
         //increase the angle each time the for loop runs
+    }
+
+    
+    //adding all the bomb methods from Week 2
+    public void SpawnBombAtOffset(Vector3 inOffset)
+    {
+        GameObject newBomb = Instantiate(bombPrefab, transform.position + inOffset, transform.rotation);
+        activeBombs.Add(newBomb);
+        offsetList.Add(inOffset);
+    }
+
+    public void SpawnBombTrail(float inBombSpacing, int inNumberofBombs)
+    {
+        Vector3 bombPos = transform.position;
+
+        for (int i = 0; i < inNumberofBombs; i++)
+        {
+            Vector2 trailOffset = new Vector2 (0, -inBombSpacing + (-inBombSpacing * i));
+            bombPos.y += trailOffset.y;
+            GameObject newBomb = Instantiate(bombPrefab, bombPos, transform.rotation);
+            activeBombs.Add(newBomb);
+            offsetList.Add(trailOffset);
+        }
+    }
+
+    public void SpawnBombOnRandomCorner(float inDistance)
+    {
+        int corner = Random.Range(1, 5);
+        Vector3 cornerOffset = Vector3.zero;
+
+        if (corner == 1)
+        {
+            cornerOffset = new Vector3(inDistance, inDistance);
+        }
+        else if (corner == 2)
+        {
+            cornerOffset = new Vector3(inDistance, -inDistance);
+        }
+        else if (corner == 3)
+        {
+            cornerOffset = new Vector3(-inDistance, inDistance);
+        }
+        else if (corner == 4)
+        {
+            cornerOffset = new Vector3(-inDistance, -inDistance);
+        }
+
+        GameObject newBomb = Instantiate(bombPrefab, transform.position + cornerOffset, transform.rotation);
+        activeBombs.Add(newBomb);
+        offsetList.Add(cornerOffset);
+    }
+
+    public void FireBombs(float explosionDistance)
+    {
+        if (moveBomb == false)
+        {
+            for (int i = 0; i < activeBombs.Count; i++)
+            {
+                activeBombs[i].transform.position = transform.position + offsetList[i];
+            }
+
+            if (Input.GetKeyDown("space"))
+            {
+
+                if (activeBombs.Count > 0)
+                {
+                    bombDirection = offsetList[0].normalized;
+                    movingBomb = activeBombs[0];
+                    activeBombs.RemoveAt(0);
+                    offsetList.RemoveAt(0);
+                    moveBomb = true;
+                    bombDist = transform.position - movingBomb.transform.position;
+
+                }
+            }
+        }
+
+
+        if (moveBomb)
+        {
+            movingBomb.transform.position += bombDirection * Time.deltaTime;
+            if (bombDist.magnitude > explosionDistance)
+            {
+                moveBomb = false;
+                Destroy(activeBombs[currentBomb]);
+
+            }
+        }
     }
 
 }
