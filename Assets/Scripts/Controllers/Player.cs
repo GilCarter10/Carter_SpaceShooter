@@ -51,12 +51,8 @@ public class Player : MonoBehaviour
     public float bombTrailSpacing;
 
     public float explosionDistance;
-    public List<GameObject> activeBombs = new List<GameObject>();
-    public List<Vector3> offsetList = new List<Vector3>();
-    GameObject movingBomb;
-    Vector3 bombDirection;
-    Vector2 bombDist;
-    public bool moveBomb = false;
+    public float bombSpeed;
+    private List<GameObject> activeBombs = new List<GameObject>();
 
     private void Start()
     {
@@ -197,7 +193,8 @@ public class Player : MonoBehaviour
     {
         GameObject newBomb = Instantiate(bombPrefab, transform.position + inOffset, transform.rotation);
         activeBombs.Add(newBomb);
-        offsetList.Add(inOffset);
+        newBomb.GetComponent<Bomb>().offset = inOffset;
+        newBomb.GetComponent<Bomb>().ship = gameObject;
     }
 
     public void SpawnBombTrail(float inBombSpacing, int inNumberofBombs)
@@ -206,11 +203,14 @@ public class Player : MonoBehaviour
 
         for (int i = 0; i < inNumberofBombs; i++)
         {
-            Vector2 trailOffset = new Vector2 (0, -inBombSpacing + (-inBombSpacing * i));
+            float maxSpacing = inBombSpacing * numberOfBombs;
+            Vector2 trailOffset = new Vector2 (0, -maxSpacing - (-inBombSpacing * i));
             bombPos.y += trailOffset.y;
+
             GameObject newBomb = Instantiate(bombPrefab, bombPos, transform.rotation);
             activeBombs.Add(newBomb);
-            offsetList.Add(trailOffset);
+            newBomb.GetComponent<Bomb>().offset = trailOffset;
+            newBomb.GetComponent<Bomb>().ship = gameObject;
         }
     }
 
@@ -238,42 +238,22 @@ public class Player : MonoBehaviour
 
         GameObject newBomb = Instantiate(bombPrefab, transform.position + cornerOffset, transform.rotation);
         activeBombs.Add(newBomb);
-        offsetList.Add(cornerOffset);
+        newBomb.GetComponent<Bomb>().offset = cornerOffset;
+        newBomb.GetComponent<Bomb>().ship = gameObject;
     }
 
     public void FireBombs(float explosionDistance)
     {
-        if (moveBomb == false)
+
+        if (Input.GetKeyDown("space"))
         {
-            for (int i = 0; i < activeBombs.Count; i++)
+
+            if (activeBombs.Count > 0)
             {
-                activeBombs[i].transform.position = transform.position + offsetList[i];
-            }
-
-            if (Input.GetKeyDown("space"))
-            {
-
-                if (activeBombs.Count > 0)
-                {
-                    bombDirection = offsetList[0].normalized;
-                    movingBomb = activeBombs[0];
-                    activeBombs.RemoveAt(0);
-                    offsetList.RemoveAt(0);
-                    moveBomb = true;
-                    bombDist = transform.position - movingBomb.transform.position;
-
-                }
-            }
-        }
-
-
-        if (moveBomb)
-        {
-            movingBomb.transform.position += bombDirection * Time.deltaTime;
-            if (bombDist.magnitude > explosionDistance)
-            {
-                moveBomb = false;
-                Destroy(activeBombs[currentBomb]);
+                activeBombs[0].GetComponent<Bomb>().StartMoving();
+                activeBombs[0].GetComponent<Bomb>().explosionDistance = explosionDistance;
+                activeBombs[0].GetComponent<Bomb>().speed = bombSpeed;
+                activeBombs.RemoveAt(0);
 
             }
         }
