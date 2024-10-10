@@ -176,7 +176,7 @@ public class Player : MonoBehaviour
             powerupOffset = new Vector3(Mathf.Cos((powerupAngle * i) * Mathf.Deg2Rad), (Mathf.Sin((powerupAngle * i) * Mathf.Deg2Rad))) * radius;
             powerupTransform = transform.position + powerupOffset;
             Instantiate(powerupPrefab, powerupTransform, transform.rotation);
-            Debug.Log("instantiated");
+            //Debug.Log("instantiated");
         }
 
         //create variable for powerup prefab
@@ -258,6 +258,7 @@ public class Player : MonoBehaviour
             }
         }
     }
+
 
 }
 
