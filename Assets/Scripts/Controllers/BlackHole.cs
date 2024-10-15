@@ -33,12 +33,11 @@ public class BlackHole : MonoBehaviour
     void Update()
     {
         //draw radius
-        float circleAngle = 360 / 20;
 
         for (int i = 0; i < 20; i++)
         {
-            Vector3 firstPoint = new Vector3(Mathf.Cos((circleAngle * i) * Mathf.Deg2Rad), (Mathf.Sin((circleAngle * i) * Mathf.Deg2Rad))) * radius + transform.position;
-            Vector3 nextPoint = new Vector3(Mathf.Cos((circleAngle * (i + 1)) * Mathf.Deg2Rad), (Mathf.Sin((circleAngle * (i + 1)) * Mathf.Deg2Rad))) * radius + transform.position;
+            Vector3 firstPoint = new Vector3(Mathf.Cos((18 * i) * Mathf.Deg2Rad), (Mathf.Sin((18 * i) * Mathf.Deg2Rad))) * radius + transform.position;
+            Vector3 nextPoint = new Vector3(Mathf.Cos((18 * (i + 1)) * Mathf.Deg2Rad), (Mathf.Sin((18 * (i + 1)) * Mathf.Deg2Rad))) * radius + transform.position;
             Debug.DrawLine(firstPoint, nextPoint, Color.white);
         }
 
@@ -67,7 +66,9 @@ public class BlackHole : MonoBehaviour
             orbitRadius -= Time.deltaTime * toCenterSpeed;
             if (orbitRadius <= 0)
             {
-                orbitRadius = 0;
+                ship.transform.position = Vector3.zero;
+                orbitRadius = radius;
+                activate = false;
             }
 
         } else

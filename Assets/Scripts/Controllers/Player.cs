@@ -197,13 +197,13 @@ public class Player : MonoBehaviour
         newBomb.GetComponent<Bomb>().ship = gameObject;
     }
 
-    public void SpawnBombTrail(float inBombSpacing, int inNumberofBombs)
+    public void SpawnBombTrail(float inBombSpacing, int inNumberOfBombs)
     {
         Vector3 bombPos = transform.position;
 
-        for (int i = 0; i < inNumberofBombs; i++)
+        for (int i = 0; i < inNumberOfBombs; i++)
         {
-            float maxSpacing = inBombSpacing * numberOfBombs;
+            float maxSpacing = inBombSpacing * inNumberOfBombs;
             Vector2 trailOffset = new Vector2 (0, -maxSpacing - (-inBombSpacing * i));
             bombPos.y += trailOffset.y;
 
